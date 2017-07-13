@@ -18,6 +18,12 @@ router.post('/api/customer/items/:itemId/purchases', function(req,res) {
   let change = req.body.inserted
   Item.findOne({_id: req.params.itemId})
     .then(function(item) {
+      if(item.quantity <= 0) {
+        res.json({
+          status: "There are no more of that item!",
+          change: change
+        })
+      } else {
       change -= item.price
       item.quantity -= 1
       item.save()
@@ -41,7 +47,8 @@ router.post('/api/customer/items/:itemId/purchases', function(req,res) {
           })
         })
       })
-    })
+    }
+  })
 })
 
 module.exports = router
